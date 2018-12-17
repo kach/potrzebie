@@ -1,0 +1,143 @@
+<meta charset="utf-8"/>
+<script src="_build/unitjs.js"></script>
+<script src="SI.js"></script>
+
+<style>
+body {
+  max-width: 50em;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 1em;
+  font-family: sans-serif;
+  font-size: 18px;
+
+  background: white;
+  color: black;
+}
+input[type=text] {
+  border: none;
+  font-family: inherit;
+  font-size: inherit;
+  background: inherit;
+  color: inherit;
+  border-bottom: 1px solid skyblue;
+}
+input[type=text]:focus {
+  outline: none;
+}
+.line .in {
+  width: 100%;
+}
+.line .out {
+  display: block;
+  width: 100%;
+  text-align: right;
+  color: green;
+}
+.line {
+  /*
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  */
+  font-family: sans-serif;
+}
+.line:after {
+  clear: both;
+}
+</style>
+
+<script>
+var empty_ctx = units.empty;
+var SI_ctx = empty_ctx;
+for (var i = 0; i < SI.length; i++) {
+  SI_ctx = units.doit(SI_ctx, SI[i]);
+}
+
+var samples = [
+  'moonbounce = 2 * distance_to_moon / c',
+  'free_lift = (helium_density - air_density) * 100 cuft'
+];
+
+function Line(prev) {
+  this.next = null;
+  this.prev = prev;
+  if (this.prev) this.prev.next = this;
+
+  this.line = document.createElement('div');
+  this.line.className = 'line';
+
+  this.input = document.createElement('input');
+  this.input.type = 'text';
+  this.input.className = 'in';
+  //this.input.placeholder = samples[Math.floor(Math.random() * samples.length)];
+
+  this.output = document.createElement('span');
+  this.output.className = 'out';
+
+  this.line.appendChild(this.input);
+  this.line.appendChild(this.output);
+
+  var myself = this;
+  //this.input.addEventListener('change', function() { myself.update(true) });
+  this.input.addEventListener('keydown', function(e) {
+    if (e.shiftKey) return;
+    switch (e.keyCode) {
+      case 38: // arrow up
+        e.preventDefault();
+        if (myself.prev) myself.prev.input.focus();
+        break
+
+      case 40: // arrow down
+        e.preventDefault();
+        if (myself.next) myself.next.input.focus();
+        break
+
+      case 13: // enter
+        e.preventDefault();
+        myself.update(true);
+        break
+
+      case 8:  // delete
+        if (myself.input.value === '' && myself.prev) {
+          e.preventDefault();
+          myself.prev.next = myself.next;
+          if (myself.next) myself.next.prev = myself.prev;
+          myself.line.remove();
+          myself.prev.input.focus();
+          myself.prev.update(false);
+        }
+        break
+
+      default:
+    }
+  }, false);
+}
+
+Line.prototype.update = function(origin) {
+  var ctx = this.prev ? this.prev.ctx : SI_ctx;
+  try {
+    this.ctx = units.doit(ctx, this.input.value);
+    this.output.innerHTML = units.readit(this.ctx, '_');
+  } catch(e) {
+    this.ctx = ctx;
+    this.output.innerHTML = 'Error!';
+  }
+  if (this.next) {
+    this.next.update(false);
+  } else {
+    if (origin) {
+      this.next = new Line(this);
+      this.line.parentNode.insertBefore(this.next.line, this.line.nextSibling);
+      this.next.input.focus();
+    }
+  }
+};
+
+window.addEventListener('load', function() {
+  var line = new Line(null);
+  document.body.appendChild(line.line);
+  line.input.focus();
+});
+</script>
