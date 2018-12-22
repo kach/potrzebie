@@ -2,6 +2,25 @@ open List
 open Map
 open String
 
+type z =
+  | Zpos of int list
+  | Zneg of int list
+  | Zero
+
+let z_0 = Zero
+let z_1 = Zpos [1]
+
+(*
+let rec z_mul a b =
+  match a, b with
+  | Zero, _ -> Zero
+  | _, Zero -> Zero
+  | Zpos a', Zneg b' -> Zneg (z_mul a (Zpos b'))
+  | Zneg a', Zpos b' -> Zneg (z_mul (Zpos a') b)
+  | Zneg a', Zneg b' -> Zpos (z_mul (Zpos a') (Zpos b'))
+  | Zpos a', Zpos b' -> Zpos [1]
+  *)
+
 type rat = (int * int)
 let rat_0 = (0, 1)
 let rat_1 = (1, 1)
@@ -83,7 +102,7 @@ let rat_root_z (n, d) e =
   | _ -> None
 
 let rat_pow r (n, d) =
-  let rn = rat_pow_z r n in
+  let rn = rat_simplify (rat_pow_z r n) in
   rat_root_z rn d
 
 
@@ -127,9 +146,12 @@ let real_pow q1 q2 =
   | RExact r,  RFloat f  -> RFloat ((float_of_rat r) ** f)
   | RFloat f,  RExact r  -> RFloat (f ** (float_of_rat r))
   | RExact r1, RExact r2 ->
+    RFloat ((float_of_rat r1) ** (float_of_rat r2))
+    (*
     match rat_pow r1 r2 with
     | Some r -> RExact r
     | None -> RFloat ((float_of_rat r1) ** (float_of_rat r2))
+    *)
 
 let real_neg q =
   match q with

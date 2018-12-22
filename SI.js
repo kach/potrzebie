@@ -18,12 +18,12 @@ e  = 2.718281828459
 
 (* METRIC PREFIXES *)
 
-(* hella = 10^27 *)
-(* yotta = 10^24 *)
-(* zetta = 10^21 *)
-(* exa   = 10^18 *)
-(* peta  = 10^15 *)
-(* tera  = 10^12 *)
+hella = 10^27
+yotta = 10^24
+zetta = 10^21
+exa   = 10^18
+peta  = 10^15
+tera  = 10^12
 giga  = 10^09
 mega  = 10^06
 kilo  = 10^03
@@ -34,12 +34,17 @@ centi = 10^-02
 milli = 10^-03
 micro = 10^-06
 nano  = 10^-09
-(* pico  = 10^-12 *)
-(* femto = 10^-15 *)
-(* atto  = 10^-18 *)
-(* zepto = 10^-21 *)
-(* yocto = 10^-24 *)
+pico  = 10^-12
+femto = 10^-15
+atto  = 10^-18
+zepto = 10^-21
+yocto = 10^-24
 
+new prefix hella    = hella
+new prefix yotta, Y = yotta
+new prefix zetta, Z = zetta
+new prefix exa,   E = exa
+new prefix tera,  T = tera
 new prefix giga,  G = giga
 new prefix mega,  M = mega
 new prefix kilo,  k = kilo
@@ -51,7 +56,12 @@ new prefix centi, c = centi
 new prefix milli, m = milli
 new prefix micro, u = micro
 new prefix nano,  n = nano
-new prefix unit_    = 1
+new prefix pico,  p = pico
+new prefix femto, f = femto
+new prefix atto,  a = atto
+new prefix zepto, z = zepto
+new prefix yocto, y = yocto
+new prefix unit_    = 1 (* in case you accidentally shadow a unit *)
 
 (* SI BASE UNITS *)
 
@@ -187,7 +197,7 @@ ins, inch, inches = ft / 12
 P, pica           = inch / 6
 p, point          = pica / 12
 
-(* au, AU ^= 1.495978707 * 10^11 m *)
+au, AU, astronomical_unit ^= 1.495978707 * 10^11 m
 
 (* TIME *)
 min, mins, minute, minutes ^= 60 sec
@@ -235,4 +245,5 @@ chromium = 51.996 g/mol
 
 (* 5 M * 2mL * (hydrogen + chlorine) *)
 (* 2 uF * 30 kiloohm *)
+(* https://xkcd.com/687/ *)
 `.split('\n');

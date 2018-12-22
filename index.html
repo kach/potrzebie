@@ -1,52 +1,17 @@
+<!DOCTYPE html>
 <meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script src="_build/unitjs.js"></script>
 <script src="SI.js"></script>
+<link rel="stylesheet" href="main.css" type="text/css"/>
 
-<style>
-body {
-  max-width: 50em;
-  margin-left: auto;
-  margin-right: auto;
-  padding: 1em;
-  font-family: sans-serif;
-  font-size: 18px;
+<p>Inspired by <a href="https://frinklang.org">Frink</a> (without which I would
+not have survived first-year physics) and <a
+href="http://wolframalpha.com">WolframAlpha</a> (without which I never would
+have made it to first-year physics). Made with 💖 in beautiful Stanford,
+California.
 
-  background: white;
-  color: black;
-}
-input[type=text] {
-  border: none;
-  font-family: inherit;
-  font-size: inherit;
-  background: inherit;
-  color: inherit;
-  border-bottom: 1px solid skyblue;
-}
-input[type=text]:focus {
-  outline: none;
-}
-.line .in {
-  width: 100%;
-}
-.line .out {
-  display: block;
-  width: 100%;
-  text-align: right;
-  color: green;
-}
-.line {
-  /*
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  */
-  font-family: sans-serif;
-}
-.line:after {
-  clear: both;
-}
-</style>
+<div id="transcript"></div>
 
 <script>
 var empty_ctx = units.empty;
@@ -71,12 +36,21 @@ function Line(prev) {
   this.input = document.createElement('input');
   this.input.type = 'text';
   this.input.className = 'in';
+  this.input.autocomplete = 'off';
+  this.input.autocorrect = 'off';
+  this.input.autocapitalize = 'off';
+  this.input.spellcheck = 'false';
+
+  this.inputBubble = document.createElement('div');
+  this.inputBubble.className = 'speech-bubble sender';
   //this.input.placeholder = samples[Math.floor(Math.random() * samples.length)];
 
-  this.output = document.createElement('span');
-  this.output.className = 'out';
+  this.output = document.createElement('div');
+  this.output.innerHTML = '&nbsp;';
+  this.output.className = 'out speech-bubble recipient';
 
-  this.line.appendChild(this.input);
+  this.inputBubble.appendChild(this.input);
+  this.line.appendChild(this.inputBubble);
   this.line.appendChild(this.output);
 
   var myself = this;
@@ -137,7 +111,7 @@ Line.prototype.update = function(origin) {
 
 window.addEventListener('load', function() {
   var line = new Line(null);
-  document.body.appendChild(line.line);
+  document.getElementById('transcript').appendChild(line.line);
   line.input.focus();
 });
 </script>

@@ -1,0 +1,76 @@
+body {
+  max-width: 30em;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 1em;
+  font-family: sans-serif;
+  font-size: 24px;
+
+  background: white;
+  color: black;
+}
+input[type=text] {
+  border: none;
+  font-family: inherit;
+  font-size: inherit;
+  background: inherit;
+  color: inherit;
+}
+input[type=text]:focus {
+  outline: none;
+}
+
+/* https://leaverou.github.io/bubbly/ */
+.speech-bubble {
+  position: relative;
+  border-radius: .4em;
+  padding: 0.4em;
+  margin: 1em;
+  color: white;
+}
+.speech-bubble.sender {
+  background: #00aabb;
+}
+.speech-bubble.recipient {
+  background: #999;
+}
+.speech-bubble.recipient:after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  width: 0;
+  height: 0;
+  border: 0.5em solid transparent;
+  border-left-color: #999;
+  border-right: 0;
+  border-bottom: 0;
+  margin-top: -0.25em;
+  margin-right: -0.5em;
+}
+.speech-bubble.sender:after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 0;
+  height: 0;
+  border: 0.5em solid transparent;
+  border-right-color: #00aabb;
+  border-left: 0;
+  border-bottom: 0;
+  margin-top: -0.25em;
+  margin-left: -0.5em;
+}
+
+.line .in {
+  width: 100%;
+}
+.line .out {
+  text-align: right;
+}
+
+.line:last-child .out {
+  display: none;
+}
+
