@@ -105,6 +105,8 @@ let rat_pow r (n, d) =
   let rn = rat_simplify (rat_pow_z r n) in
   rat_root_z rn d
 
+let rat_sign (n, d) = n * d
+let rat_abs r = if (rat_sign r) < 0 then rat_neg r else r
 
 
 

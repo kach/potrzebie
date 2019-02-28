@@ -4,6 +4,8 @@ new dimension dimensionless measured in 1
 (* COMMON NUMBERS *)
 
 exactly = 1.0
+of = 1
+
 hundred = 10^2
 thousand = 10^3
 myriad = 10^4
@@ -158,7 +160,7 @@ new dimension magnetic_flux_density measured in T
 H, henry, henries, henrys ^= Wb/A
 new dimension inductance measured in H
 
-degC, C = K
+degC, celsius = K
 
 lm, lumen, lumens ^= cd sr
 new dimension luminous_flux measured in lm
@@ -190,26 +192,68 @@ amu, amus, u, Da, dalton, daltons ^= 1 g / (avogadro mol)
 (* Big library of everything *)
 
 (* LENGTH *)
-ft, foot, feet    = (3048 / 10000) m
-yd, yard, yards   = 3 feet
-mi, mile, miles   = 1760 yd
-ins, inch, inches = ft / 12
-P, pica           = inch / 6
-p, point          = pica / 12
+ft, foot, feet    ^= (3048 / 10000) m
+yd, yard, yards   ^= 3 feet
+mi, mile, miles   ^= 1760 yd
+ins, inch, inches ^= ft / 12
+P, pica           ^= inch / 6
+p, point          ^= pica / 12
+
+li, link ^= (33/50) ft
+survey_foot ^= 30.480 cm
+rd, rod ^= 25 li
+ch, chain ^= 4 rd
+fur, furlong ^= 10 ch
+survey_mile, statue_mile ^= 8 fur
+lea, league ^= 3 survey_mile
+
+ftm, fathom ^= 2 yd
+cb, cable ^= 120 ftm
+NM, nmi, nautical_mile ^= 3429/15625 km
 
 au, AU, astronomical_unit ^= 1.495978707 * 10^11 m
+
+(* AREA *)
+
+sqft, sqft ^= ft^2
+sqch, sqch ^= ch^2
+acre ^= 10 sqch
+section ^= survey_mile^2
+twp, survey_township ^= 36 section
+
+cuin ^= inch^3
+cuft ^= ft^3
+cuyd ^= yd^3
+
+(* VOLUME *)
+
+min, minim ^= 61.611519921875 uL
+fldr, fluid_dram ^= 60 min
+tsp, teaspoon ^= 80 min
+Tbsp, tbsp, tablespoon ^= 3 tsp
+floz, fluid_ounce ^= 2 Tbsp
+jig, shot ^= 3 tbsp
+gi, gill ^= 4 floz
+cp, cup ^= 2 gi
+pint = 2 cp
+qt, quart = 2 pint
+gal, gallon = 4 qt
+bbl, barrel = (31 + 1/2) gal
+oil_barrel = 42 gal
+hogshead = 63 gal
 
 (* TIME *)
 min, mins, minute, minutes ^= 60 sec
 hr, hrs, hour, hours ^= 60 min
-day, days = 24 hours
-week, weeks = 7 days
-fortnight = 2 weeks
-yr, yrs, year, years = (365 + 1/4) days
-mon, month, months = year / 12
+day, days ^= 24 hours
+week, weeks ^= 7 days
+fortnight ^= 2 weeks
+yr, yrs, year, years ^= (365 + 1/4) days
+mon, month, months ^= year / 12
 
 (* PERIODIC TABLE *)
 
+new dimension molar_mass measured in g/mol
 hydrogen = 1.008 g/mol
 helium = 4.0026 g/mol
 lithium = 6.94 g/mol
@@ -234,6 +278,20 @@ scandium = 44.956 g/mol
 titanium = 47.867 g/mol
 vanadium = 50.942 g/mol
 chromium = 51.996 g/mol
+manganese = 54.938 g/mol
+iron = 55.845 g/mol
+cobalt = 58.933 g/mol
+nickel = 58.693 g/mol
+copper = 63.546 g/mol
+zinc = 65.38 g/mol
+gallium = 69.723 g/mol
+germanium = 72.630 g/mol
+arsenic = 74.922 g/mol
+selenium = 78.971 g/mol
+bromine = 79.904 g/mol
+krypton = 83.798 g/mol
+rubidium = 85.468 g/mol
+strontium = 87.62 g/mol
 (* TODO finish these *)
 
 

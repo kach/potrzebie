@@ -30,6 +30,11 @@ let rec main context =
       print_int (lexbuf.lex_curr_p.pos_cnum);
       print_newline ();
       main context
+    | Context_not_found name ->
+      let choices = misspelling_suggestions context name in
+      print_string ("Name not found: " ^ name ^ ", did you mean any of these? " ^ (String.concat ", " choices));
+      print_newline ();
+      main context
   with
   | End_of_file ->
     print_newline ()

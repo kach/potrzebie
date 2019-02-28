@@ -7,6 +7,7 @@ type context = {
   prefixes: (string * qty) list;
   environment : (string * qty) list;
   functions : (string * (qty list -> qty)) list;
+  response : string;
 }
 
 let context_find_dimension_names context ((a, u) : qty) : string list =
@@ -31,13 +32,50 @@ let empty_context = {
     ("^", fun a -> qty_pow (List.nth a 0) (List.nth a 1));
     ("~", fun a -> qty_neg (List.nth a 0));
   ];
+  response = "";
 }
+
+exception Context_not_found of string
+
+let levenshtein_memo : ((string * string) * int) list ref = ref []
+
+let rec levenshtein a b : int =
+  match List.assoc_opt (a, b) (!levenshtein_memo) with
+  | Some x -> x
+  | None -> (
+    if String.length a = 0 then (
+      levenshtein_memo := ((a, b), 0)::!levenshtein_memo;
+      String.length b
+    ) else if String.length b = 0 then (
+      levenshtein_memo := ((a, b), 0)::!levenshtein_memo;
+      String.length a
+    ) else
+      let c1 =
+        if String.get a 0 = String.get b 0 then 0 else 1
+      in
+      let a' = (String.sub a 1 ((String.length a) - 1)) in
+      let b' = (String.sub b 1 ((String.length b) - 1)) in
+      let l_insert_a = 1 + levenshtein a b' in
+      let l_insert_b = 1 + levenshtein a' b in
+      let l_mutate = c1 + levenshtein a' b' in
+      let answer = min (min l_insert_a l_insert_b) l_mutate in
+      levenshtein_memo := ((a, b), answer)::!levenshtein_memo;
+      answer
+    )
+
+let misspelling_suggestions ctx word =
+  let scored = List.map (fun (name, value) -> (name, levenshtein name word)) ctx.environment in
+  let sorted = List.filter (fun (name, score) -> score < 3) scored in
+  List.map fst sorted
 
 let rec eval_expr context expr : qty =
   match expr with
   | EInt (p, i) -> (RExact (i, 1), dim_none)
   | EFloat (p, f) -> (RFloat f, dim_none)
-  | EVar (p, n) -> List.assoc n context.environment
+  | EVar (p, n) -> (
+      try List.assoc n context.environment
+      with Not_found -> raise (Context_not_found n)
+    )
   | EFun (p, f, a) -> (List.assoc f context.functions) (List.map (eval_expr context) a)
 
 let context_make_prefixes context name value =

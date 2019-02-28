@@ -7,23 +7,36 @@ open Parser
 open Math
 
 let superscript x = "<sup>" ^ x ^ "</sup>"
-  
+
+let html_of_float f =
+  let e = floor (log10 (abs_float f)) in
+  if (abs_float e) < 2.0 then
+    (string_of_float f)
+  else
+    (string_of_float (f /. (10. ** e))) ^ " &times; 10" ^ (superscript (string_of_int (int_of_float e)))
+
 let html_of_real r =
   match r with
   | RExact r ->
-    (string_of_rat r) ^ " " ^
-    "(&approx;&nbsp;" ^ (string_of_float (float_of_rat r)) ^ ")"
-  | RFloat f -> string_of_float f
+    (html_of_float (float_of_rat r))
+  | RFloat f -> html_of_float f
 
 let html_of_dim d =
-  let fmt_piece (d, e) =
+  let fmt_piece positive (d, e) =
     if rat_eq e rat_0 then "" else
-    d ^ (if (rat_eq e rat_1) then "" else (superscript (string_of_rat e)))
+    if positive && ((rat_sign e) < 0) then "" else
+    if (not positive) && ((rat_sign e) > 0) then "" else
+    let e' = (rat_abs e) in
+    d ^ (if (rat_eq e' rat_1) then "" else (superscript (string_of_rat e')))
   in
-  let pieces = List.map fmt_piece (DimMap.bindings d) in
-  String.concat " " pieces
+  let piecesPositive' = List.map (fmt_piece true)  (DimMap.bindings d) in
+  let piecesPositive =  (String.concat " " piecesPositive') in
+  let piecesNegative' = List.map (fmt_piece false) (DimMap.bindings d) in
+  let piecesNegative = (String.concat " " piecesNegative') in
+  (if piecesPositive = "" then "" else piecesPositive) ^
+  (if piecesNegative = "" then "" else " &#x2215; " ^ piecesNegative)
 
-let html_of_qty (a, u) = (html_of_real a) ^ " " ^ (html_of_dim u)
+let html_of_qty (a, u) = (html_of_real a) ^ " <span class=\"dimension\">" ^ (html_of_dim u) ^ "</span>"
 
 let doit (context : Units.context) (line : string) : Units.context =
   let lexbuf = Lexing.from_string line in
@@ -32,7 +45,7 @@ let doit (context : Units.context) (line : string) : Units.context =
 
 let readit (context : Units.context) (name : string) : string =
   let q = (List.assoc name context.environment) in
-  html_of_qty q ^ " [" ^ (context_string_of_dimension_name context q) ^ "]"
+  html_of_qty q ^ " <span class=\"quantity\">[" ^ (context_string_of_dimension_name context q) ^ "]</span>"
 
 let _ =
   Js_of_ocaml.Js.export "units"
