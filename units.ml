@@ -37,36 +37,38 @@ let empty_context = {
 
 exception Context_not_found of string
 
-let levenshtein_memo : ((string * string) * int) list ref = ref []
 
 let rec levenshtein a b : int =
-  match List.assoc_opt (a, b) (!levenshtein_memo) with
-  | Some x -> x
-  | None -> (
-    if String.length a = 0 then (
-      levenshtein_memo := ((a, b), 0)::!levenshtein_memo;
-      String.length b
-    ) else if String.length b = 0 then (
-      levenshtein_memo := ((a, b), 0)::!levenshtein_memo;
-      String.length a
-    ) else
-      let c1 =
-        if String.get a 0 = String.get b 0 then 0 else 1
-      in
-      let a' = (String.sub a 1 ((String.length a) - 1)) in
-      let b' = (String.sub b 1 ((String.length b) - 1)) in
-      let l_insert_a = 1 + levenshtein a b' in
-      let l_insert_b = 1 + levenshtein a' b in
-      let l_mutate = c1 + levenshtein a' b' in
-      let answer = min (min l_insert_a l_insert_b) l_mutate in
-      levenshtein_memo := ((a, b), answer)::!levenshtein_memo;
-      answer
+  let memo : int option array array =
+    Array.make_matrix ((String.length a) + 1) ((String.length b) + 1) None
+  in
+  let rec levenshtein' : int -> int -> int = fun x y -> (
+    match memo.(x).(y) with
+    | Some x -> x
+    | None -> (
+      if x = 0 then (
+        memo.(x).(y) <- (Some y) ; y
+      ) else if y = 0 then (
+        memo.(x).(y) <- (Some x) ; x
+      ) else
+        let c1 =
+          if String.get a x = String.get b y then 0 else 1
+        in
+        let l_insert_a = 1 + levenshtein' x (y - 1) in
+        let l_insert_b = 1 + levenshtein' (x - 1) y in
+        let l_mutate  = c1 + levenshtein' (x - 1) (y - 1) in
+        let answer = min (min l_insert_a l_insert_b) l_mutate in
+        memo.(x).(y) <- (Some answer) ; answer
+      )
     )
+  in levenshtein' ((String.length a) - 1) ((String.length b) - 1)
 
 let misspelling_suggestions ctx word =
   let scored = List.map (fun (name, value) -> (name, levenshtein name word)) ctx.environment in
-  let sorted = List.filter (fun (name, score) -> score < 3) scored in
-  List.map fst sorted
+  let filtered = List.filter (fun (name, score) -> score < 3) scored in
+  let sorted = List.sort_uniq (fun (n1, s1) (n2, s2) -> compare s1 s2) filtered in
+  let names = List.map fst sorted in
+  names
 
 let rec eval_expr context expr : qty =
   match expr with
