@@ -40,12 +40,25 @@ let html_of_qty (a, u) = (html_of_real a) ^ " <span class=\"dimension\">" ^ (htm
 
 let doit (context : Units.context) (line : string) : Units.context =
   let lexbuf = Lexing.from_string line in
-  let stmts = Parser.main Lexer.main lexbuf in
-  List.fold_left Units.eval_stmt context stmts
+  try
+    let stmts = Parser.main Lexer.main lexbuf in
+    let result = List.fold_left Units.eval_stmt context stmts in
+    let q = (List.assoc "_" context.environment) in
+    let outstr = html_of_qty q ^ " <span class=\"quantity\">[" ^ (context_string_of_dimension_name context q) ^ "]</span>" in
+    {result with response = outstr}
+  with
+  | Parser.Error ->
+    let errstr = "Syntax error at "
+      ^ (string_of_int (lexbuf.lex_curr_p.pos_lnum))
+      ^ ":"
+      ^ (string_of_int (lexbuf.lex_curr_p.pos_cnum))
+    in {context with response = errstr}
+  | Units.Context_not_found name ->
+    let choices = Units.misspelling_suggestions context name in
+    let errstr = ("Name not found: " ^ name ^ ", did you mean any of these? " ^ (String.concat ", " choices)) in
+    {context with response = errstr}
 
-let readit (context : Units.context) (name : string) : string =
-  let q = (List.assoc name context.environment) in
-  html_of_qty q ^ " <span class=\"quantity\">[" ^ (context_string_of_dimension_name context q) ^ "]</span>"
+let readit (context : Units.context) (name : string) : string = context.response
 
 let _ =
   Js_of_ocaml.Js.export "units"
