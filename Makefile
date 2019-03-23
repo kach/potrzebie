@@ -2,7 +2,8 @@ all: _build/unitjs.js stdlib.js _build/unitml.native
 	# easy
 
 stdlib.js: stdlib.p
-	echo 'var SI = `' > stdlib.js
+	echo '// THIS FILE WAS AUTOMATICALLY GENERATED.' > stdlib.js
+	echo 'var SI = `' >> stdlib.js
 	cat stdlib.p >> stdlib.js
 	echo '`.split("\\n")' >> stdlib.js
 

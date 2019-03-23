@@ -1,3 +1,4 @@
+// THIS FILE WAS AUTOMATICALLY GENERATED.
 var SI = `
 new dimension dimensionless measured in 1
 
