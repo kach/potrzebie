@@ -14,8 +14,8 @@ crore = hundred lakh
 billion = 10^9
 pi = 3.14159265359
 e  = 2.718281828459
-(* trillion = 10^12 *)
-(* quadrillion = 10^15 *)
+trillion = 10^12
+quadrillion = 10^15
 
 (* METRIC PREFIXES *)
 
@@ -302,4 +302,5 @@ strontium = 87.62 g/mol
 
 (* 5 M * 2mL * (hydrogen + chlorine) *)
 (* 2 uF * 30 kiloohm *)
+(* by how much does a windmill slow the wind? *)
 (* https://xkcd.com/687/ *)
