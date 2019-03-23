@@ -1,5 +1,5 @@
 Potrzebie is a smart, unit-aware desktop calculator, inspired by WolframAlpha
-and Frink <https://frinklang.org>.
+and Frink <https://frinklang.org>, but with an emphasis on user-friendliness.
 
 To hack on Potrzebie's core, you need a few things:
 * OCaml, as installed by OPAM
