@@ -1,4 +1,3 @@
-var SI = `
 new dimension dimensionless measured in 1
 
 (* COMMON NUMBERS *)
@@ -304,4 +303,3 @@ strontium = 87.62 g/mol
 (* 5 M * 2mL * (hydrogen + chlorine) *)
 (* 2 uF * 30 kiloohm *)
 (* https://xkcd.com/687/ *)
-`.split('\n');
