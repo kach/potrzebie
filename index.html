@@ -25,7 +25,7 @@ function Line(prev) {
   if (this.prev) this.prev.next = this;
 
   this.line = document.createElement('div');
-  this.line.className = 'line';
+  this.line.className = 'line last';
 
   this.input = document.createElement('input');
   this.input.type = 'text';
@@ -48,7 +48,6 @@ function Line(prev) {
   this.line.appendChild(this.output);
 
   var myself = this;
-  //this.input.addEventListener('change', function() { myself.update(true) });
   this.input.addEventListener('keydown', function(e) {
     if (e.shiftKey) return;
     switch (e.keyCode) {
@@ -64,7 +63,10 @@ function Line(prev) {
 
       case 13: // enter
         e.preventDefault();
-        myself.update(true);
+        if (myself.input.value !== '') {
+          myself.line.className = 'line';
+          myself.update(true);
+        }
         break
 
       case 8:  // delete

@@ -78,11 +78,16 @@ input[type=text]:focus {
 .line .out {
   text-align: right;
 }
-
-.line:last-child .recipient {
+.line .recipient {
+  display: block;
+}
+.line .sender {
+  box-shadow: none;
+}
+.line.last .recipient {
   display: none;
 }
-.line:last-child .sender {
+.line.last .sender {
   box-shadow: 0 0 1px 1px yellow;
 }
 
