@@ -43,7 +43,7 @@ let doit (context : Units.context) (line : string) : Units.context =
   try
     let stmts = Parser.main Lexer.main lexbuf in
     let result = List.fold_left Units.eval_stmt context stmts in
-    let q = (List.assoc "_" context.environment) in
+    let q = (List.assoc "_" result.environment) in
     let outstr = html_of_qty q ^ " <span class=\"quantity\">[" ^ (context_string_of_dimension_name context q) ^ "]</span>" in
     {result with response = outstr}
   with
